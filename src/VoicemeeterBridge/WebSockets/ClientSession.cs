@@ -103,6 +103,11 @@ public sealed class ClientSession
             closeStatus = WebSocketCloseStatus.MessageTooBig;
             closeReason = "frame too large";
         }
+        catch (BinaryFrameException)
+        {
+            closeStatus = WebSocketCloseStatus.InvalidMessageType;
+            closeReason = "text frames only";
+        }
         catch (WebSocketException ex)
         {
             _log.Debug("Socket error: {Message}", ex.Message);
@@ -410,6 +415,10 @@ public sealed class ClientSession
     {
     }
 
+    private sealed class BinaryFrameException : Exception
+    {
+    }
+
     /// <summary>Reads one complete text frame, or <c>null</c> when the client sent a close frame.</summary>
     private async Task<string?> ReceiveTextAsync(CancellationToken cancellationToken)
     {
@@ -425,7 +434,7 @@ public sealed class ClientSession
 
             if (result.MessageType != WebSocketMessageType.Text)
             {
-                throw new FrameTooLargeException();
+                throw new BinaryFrameException();
             }
 
             message.Write(buffer, 0, result.Count);
