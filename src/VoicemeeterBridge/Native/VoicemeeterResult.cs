@@ -17,6 +17,9 @@ public static class VoicemeeterResult
     /// <summary>The parameter name is not known to this Voicemeeter edition.</summary>
     public const int UnknownParameter = -3;
 
+    /// <summary>Level channel or index is out of range.</summary>
+    public const int OutOfRange = -4;
+
     /// <summary>Structure mismatch between DLL and application.</summary>
     public const int StructureMismatch = -5;
 
@@ -31,6 +34,7 @@ public static class VoicemeeterResult
         Error => "error",
         NoServer => "voicemeeter not running",
         UnknownParameter => "unknown parameter",
+        OutOfRange => "out of range",
         StructureMismatch => "structure mismatch",
         _ => $"native error {code}",
     };
