@@ -101,6 +101,8 @@ public sealed class WebSocketEndToEndTests : IAsyncLifetime
         await SendAsync(ws, "{\"op\":\"hello\",\"token\":\"test-token\",\"protocol\":1}");
         var welcome = await ReceiveAsync(ws);
         Assert.Equal("welcome", welcome.GetProperty("op").GetString());
+        Assert.Equal(1, welcome.GetProperty("protocol").GetInt32());
+        Assert.Matches(@"^\d+\.\d+\.\d+$", welcome.GetProperty("agentVersion").GetString());
         return ws;
     }
 

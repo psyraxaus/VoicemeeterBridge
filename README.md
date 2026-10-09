@@ -30,10 +30,41 @@ dotnet publish src/VoicemeeterBridge -c Release -r win-x64 --self-contained -o p
 
 Copy the `publish` folder anywhere, for example `C:\Tools\VoicemeeterBridge`, and run `VoicemeeterBridge.exe`.
 
+### Installer
+
+[Inno Setup 6](https://jrsoftware.org/isinfo.php) must be installed. Then:
+
+```bash
+build/build-installer.sh
+```
+
+This runs the tests, publishes a self-contained build to `publish/`, and compiles [installer/VoicemeeterBridge.iss](installer/VoicemeeterBridge.iss) into `dist/VoicemeeterBridge-Setup-<version>.exe`. Add `--skip-tests` to go faster. If Inno Setup is somewhere unusual, set `ISCC=/path/to/ISCC.exe` in the environment.
+
+The installer is per-user and needs no admin rights: files go to `%LOCALAPPDATA%\Programs\VoicemeeterBridge`, and the optional "start when I sign in" task writes the same `HKCU\...\Run` entry as the tray menu. If the bridge is running, Setup asks you to close it first. Uninstall removes the Run entry and asks whether to delete the settings and logs folder (say No to keep the token).
+
+### Versioning
+
+The app uses [semantic versioning](https://semver.org): `MAJOR.MINOR.PATCH`.
+
+| Bump | When |
+|---|---|
+| MAJOR | A breaking change to the WebSocket protocol or the configuration file. `protocol` in `hello`/`welcome` changes too. |
+| MINOR | New frames, options or features that keep existing clients working. |
+| PATCH | Bug fixes only. |
+
+The version lives in one place: `<Version>` in [Directory.Build.props](Directory.Build.props). It flows into the assembly and file version, the log's first line, the tray tooltip, the `agentVersion` field of the `welcome` frame, and the installer's name and version info. To release:
+
+```bash
+# 1. edit <Version> in Directory.Build.props, then
+git commit -am "Release 0.2.0"
+git tag v0.2.0
+build/build-installer.sh
+```
+
 ## Install on the flight-sim PC
 
-1. Copy the published folder to the PC that runs Voicemeeter.
-2. Run `VoicemeeterBridge.exe`. A circle icon appears in the notification area: green when Voicemeeter is connected, grey when it is not.
+1. Run `VoicemeeterBridge-Setup-<version>.exe` on the PC that runs Voicemeeter, or copy the published folder there by hand.
+2. Run `VoicemeeterBridge.exe` (the installer offers to start it). A circle icon appears in the notification area: green when Voicemeeter is connected, grey when it is not.
 3. Right-click the icon, choose **Copy token**, and paste the token into the client's settings. The token was generated on first run and stored in `%LOCALAPPDATA%\VoicemeeterBridge\appsettings.json`.
 4. Right-click the icon and tick **Start with Windows** so the bridge starts with your session. This writes an entry under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`. The bridge must run in the logged-in user session, not as a service, because the Remote API only talks to the Voicemeeter window in the same session.
 5. Add the firewall rule below.

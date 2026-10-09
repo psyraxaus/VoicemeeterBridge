@@ -131,11 +131,11 @@ Answered with `pong`. Useful as an application-level keep-alive.
 ### welcome
 
 ```json
-{"op":"welcome","protocol":1,"voicemeeter":{"connected":true,"kind":"potato","version":"3.1.1.2"}}
-{"op":"welcome","protocol":1,"voicemeeter":{"connected":false}}
+{"op":"welcome","protocol":1,"agentVersion":"0.1.0","voicemeeter":{"connected":true,"kind":"potato","version":"3.1.1.2"}}
+{"op":"welcome","protocol":1,"agentVersion":"0.1.0","voicemeeter":{"connected":false}}
 ```
 
-Sent once, right after a valid `hello`. `kind` is `standard`, `banana` or `potato`. `kind` and `version` are present only when `connected` is `true`.
+Sent once, right after a valid `hello`. `agentVersion` is the bridge's own version (semantic versioning, `MAJOR.MINOR.PATCH`); a MAJOR bump means this protocol changed incompatibly and `protocol` will have changed too. `kind` is `standard`, `banana` or `potato`. `kind` and `version` are present only when `connected` is `true`.
 
 ### status
 

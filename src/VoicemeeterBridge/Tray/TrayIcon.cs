@@ -100,7 +100,7 @@ public sealed class TrayIcon : IDisposable
         var vm = status.Connected
             ? $"Voicemeeter {status.Kind} {status.Version}"
             : "Voicemeeter not running";
-        var text = $"VoicemeeterBridge  port {_options.Port}\n{vm}\nClients: {clients}";
+        var text = $"VoicemeeterBridge {AppVersion.Current}  port {_options.Port}\n{vm}\nClients: {clients}";
 
         // NotifyIcon.Text is limited to 127 characters.
         _notifyIcon.Text = text.Length > 127 ? text[..127] : text;

@@ -130,7 +130,8 @@ public static class BridgeApp
 
         var app = builder.Build();
         var log = app.Services.GetRequiredService<ILogger>();
-        log.Information("VoicemeeterBridge starting (fake={Fake}, listen={Address}:{Port})", launch.UseFake, bridge.ListenAddress, bridge.Port);
+        log.Information("VoicemeeterBridge {Version} starting (fake={Fake}, listen={Address}:{Port})",
+            AppVersion.Current, launch.UseFake, bridge.ListenAddress, bridge.Port);
         if (generatedToken is not null)
         {
             log.Information("Generated a new auth token and stored it in {Path}", generatedToken);

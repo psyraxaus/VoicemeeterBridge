@@ -23,7 +23,13 @@ public static class ServerMessages
 
     /// <summary><c>welcome</c>: sent once after a successful <c>hello</c>.</summary>
     public static string Welcome(VoicemeeterStatus status) =>
-        Serialize(new { op = "welcome", protocol = ClientMessageParser.ProtocolVersion, voicemeeter = StatusBody(status) });
+        Serialize(new
+        {
+            op = "welcome",
+            protocol = ClientMessageParser.ProtocolVersion,
+            agentVersion = AppVersion.Current,
+            voicemeeter = StatusBody(status),
+        });
 
     /// <summary><c>status</c>: sent whenever the Voicemeeter connection changes.</summary>
     public static string Status(VoicemeeterStatus status) =>
